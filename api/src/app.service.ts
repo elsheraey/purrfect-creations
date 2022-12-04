@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { AirtableService } from './airtable/airtable.service';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  constructor(private airtableService: AirtableService) {}
+
+  getHello() {
+    return this.airtableService.getOrders();
   }
 }

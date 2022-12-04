@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
+import { CacheModule, Module } from '@nestjs/common';
+import { AirtableModule } from './airtable/airtable.module';
+import { AirtableService } from './airtable/airtable.service';
 import { AppService } from './app.service';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [CacheModule.register(), AirtableModule, OrdersModule],
+  providers: [AppService, AirtableService],
 })
 export class AppModule {}
