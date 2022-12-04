@@ -1,0 +1,11 @@
+services:
+  web:
+    build:
+      context: ./web
+    ports:
+      - "30011:80"
+  api:
+    build:
+      context: ./api
+    ports:
+      - "3000:3000"
