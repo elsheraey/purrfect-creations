@@ -20,6 +20,25 @@ export class OrdersService {
 
   async getMetrics() {
     const orders = await this.findAll();
+
+    const ordersByOrderStatus = {
+      [ORDER_STATUS.placed]: 0,
+      [ORDER_STATUS.inProgress]: 0,
+      [ORDER_STATUS.shipped]: 0,
+      [ORDER_STATUS.cancelled]: 0,
+    };
+
+    const ordersByProductName = {};
+
+    orders.forEach(order => {
+      ++ordersByOrderStatus[order.orderStatus];
+
+      if (!(order.productName in ordersByProductName)) {
+        ordersByProductName[order.productName] = 0;
+      }
+      ++ordersByProductName[order.productName];
+    });
+
     return {
       totalOrders: orders.length,
       ordersThisMonth: orders.filter(order =>
@@ -42,6 +61,8 @@ export class OrdersService {
       recentOrders: orders
         .sort((lhs, rhs) => dayjs(rhs.orderPlaced).diff(dayjs(lhs.orderPlaced)))
         .slice(0, 10),
+      ordersByOrderStatus,
+      ordersByProductName,
     };
   }
 }
