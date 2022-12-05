@@ -1,8 +1,10 @@
 // REFERENCE: https://airtable.com/app8wLQrrIMrnn673/api/docs#curl/table:orders:fields
 
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as Airtable from 'airtable';
 import { Cache } from 'cache-manager';
+import { AIRTABLE_BASE_ID } from './constants/airtable-base-id.constant';
 import { AIRTABLE_FIELD_IDS } from './constants/airtable-field-ids.constant';
 import { AIRTABLE_TABLE_IDS } from './constants/airtable-table-ids.constant';
 import { AIRTABLE_VIEWS } from './constants/airtable-views.constant';
@@ -12,9 +14,15 @@ import { Order } from './types/order.type';
 export class AirtableService {
   private base: Airtable.Base;
 
-  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {
-    Airtable.configure({ apiKey: 'keyzxdRmJMnIxTtjM' });
-    this.base = Airtable.base('app8wLQrrIMrnn673');
+  constructor(
+    private readonly configService: ConfigService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {
+    const apiKey = configService.get<string>('AIRTABLE_API_KEY');
+
+    Airtable.configure({ apiKey: apiKey });
+
+    this.base = Airtable.base(AIRTABLE_BASE_ID);
   }
 
   // TODO: might require pagination in a production setting to avoid huge responses
